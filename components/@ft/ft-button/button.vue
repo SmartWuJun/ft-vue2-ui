@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import TButton from '../../ant/button';
+import TButton from '../../button';
 
 export default {
   name: 'FtButton',

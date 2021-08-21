@@ -1,5 +1,5 @@
 import 'babel-polyfill';
-import '../../components/ant/style.js';
+import '../../components/style.js';
 import './index.less';
 import 'nprogress/nprogress.css';
 import Vue from 'vue';
