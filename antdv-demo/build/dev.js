@@ -1,3 +1,4 @@
+// 测试单个 组件
 process.env.ENTRY_INDEX = 'dev';
 
 const fs = require('fs');
@@ -172,7 +173,7 @@ const renderTemplate = name => {
   fs.writeFileSync(OUTPUT_PATH, template);
 };
 
-function fsExistsSync(path) {
+function fsExistsSync (path) {
   try {
     fs.accessSync(path, fs.F_OK);
   } catch (e) {

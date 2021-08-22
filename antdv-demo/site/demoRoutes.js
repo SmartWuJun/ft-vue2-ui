@@ -503,12 +503,5 @@ export default [
     path: 'space-cn',
     component: () => import('../docs/space/demo/index.vue'),
   },
-  // {
-  //   path: 'color-picker',
-  //   component: () => import('../docs/color-picker/demo/index.vue'),
-  // },
-  // {
-  //   path: 'color-picker-cn',
-  //   component: () => import('../docs/color-picker/demo/index.vue'),
-  // },
+
 ];

@@ -141,6 +141,7 @@ export default {
   },
   render() {
     const { type, htmlType, classes, disabled, handleClick, sLoading, $slots, $attrs } = this;
+
     const icon = getComponentFromProp(this, 'icon');
     const buttonProps = {
       attrs: {
@@ -160,7 +161,7 @@ export default {
     const kids = children.map(child =>
       this.insertSpace(child, this.isNeedInserted() && autoInsertSpace),
     );
-
+  
     if ($attrs.href !== undefined) {
       return (
         <a {...buttonProps} ref="buttonNode">

@@ -28,8 +28,8 @@ const fetch = (str, tag, scoped) => {
     return scoped
       ? $(`${tag}[scoped]`).html()
       : $(`${tag}`)
-          .not(`${tag}[scoped]`)
-          .html();
+        .not(`${tag}[scoped]`)
+        .html();
   }
   return $(tag).html();
 };
@@ -39,7 +39,7 @@ const fetch = (str, tag, scoped) => {
  * @param  {string} str
  * @return {string}
  */
-const replaceDelimiters = function(str) {
+const replaceDelimiters = function (str) {
   return str.replace(/({{|}})/g, '<span>$1</span>');
 };
 
@@ -49,14 +49,14 @@ const replaceDelimiters = function(str) {
  * @param  {string} lang
  */
 
-const renderHighlight = function(str, lang) {
+const renderHighlight = function (str, lang) {
   if (!(lang && Prism.languages[lang])) {
     return '';
   }
 
   try {
     return replaceDelimiters(Prism.highlight(str, Prism.languages[lang], lang));
-  } catch (err) {}
+  } catch (err) { }
 };
 
 const md = require('markdown-it')('default', {
@@ -79,7 +79,7 @@ const md = require('markdown-it')('default', {
 // md.renderer.rules.fence = wrap(md.renderer.rules.fence)
 const cnReg = new RegExp('<(cn)(?:[^<]|<)+</\\1>', 'g');
 const usReg = new RegExp('<(us)(?:[^<]|<)+</\\1>', 'g');
-md.core.ruler.push('update_template', function replace({ tokens }) {
+md.core.ruler.push('update_template', function replace ({ tokens }) {
   let cn = '';
   let us = '';
   let template = '';
@@ -142,6 +142,8 @@ md.core.ruler.push('update_template', function replace({ tokens }) {
     tokens.push(t);
   }
 });
+
+console.log('process.env.NODE_ENV: ', process.env.NODE_ENV);
 const vueLoaderOptions = {
   loaders: {
     js: [
@@ -201,22 +203,22 @@ module.exports = {
   resolve:
     process.env.NODE_ENV === 'development'
       ? {
-          modules: ['node_modules', path.join(__dirname, '../node_modules')],
-          extensions: ['.js', '.jsx', '.vue', '.md'],
-          alias: {
-            vue$: 'vue/dist/vue.esm.js',
-            'ant-design-vue$': path.join(__dirname, '../../components/index.js'),
-            'ant-design-vue/es': path.join(__dirname, '../../components'),
-            'ant-design-vue/lib': path.join(__dirname, '../../components'),
-          },
-        }
-      : {
-          modules: ['node_modules'],
-          extensions: ['.js', '.jsx', '.vue', '.md'],
-          alias: {
-            vue$: 'vue/dist/vue.esm.js',
-          },
+        modules: ['node_modules', path.join(__dirname, '../node_modules')],
+        extensions: ['.js', '.jsx', '.vue', '.md'],
+        alias: {
+          vue$: 'vue/dist/vue.esm.js',
+          'ant-design-vue$': path.join(__dirname, '../../components/index.js'),
+          'ant-design-vue/es': path.join(__dirname, '../../components'),
+          'ant-design-vue/lib': path.join(__dirname, '../../components'),
         },
+      }
+      : {
+        modules: ['node_modules'],
+        extensions: ['.js', '.jsx', '.vue', '.md'],
+        alias: {
+          vue$: 'vue/dist/vue.esm.js',
+        },
+      },
   plugins: [
     new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
     new VueLoaderPlugin(),

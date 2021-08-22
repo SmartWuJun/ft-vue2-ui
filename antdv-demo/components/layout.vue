@@ -1,10 +1,10 @@
 <script>
 import { enquireScreen } from 'enquire-js';
-import AllDemo from '../site/demo';
+import AntAllDemo from '../site/demo';
+import FtAllDemo from '../site/ftDemo';
 import Header from './header';
 import Footer from './footer';
-// import Geektime from './geektime';
-import GeektimeAds from './geektime_ads';
+
 import RightBottomAd from './right_bottom_ad';
 import Sponsors from './sponsors';
 import zhCN from 'ant-design-vue/es/locale-provider/zh_CN';
@@ -15,7 +15,6 @@ import { Provider, create } from '../../components/_util/store';
 import NProgress from 'nprogress';
 import MobileMenu from '../../components/vc-drawer/src';
 import TopAd from './top_ad';
-import GoogleAds from './GoogleAds';
 
 const docsList = [
   { key: 'introduce', enTitle: 'Ant Design of Vue', title: 'Ant Design of Vue' },
@@ -29,9 +28,6 @@ const docsList = [
   { key: 'download', enTitle: 'Download Design Resources', title: '下载设计资源' },
 ];
 
-const isGitee = window.location.host.indexOf('gitee.io') > -1;
-const showAd = false; // location.host.indexOf('antdv.com') > -1;
-
 export default {
   provide() {
     return {
@@ -40,6 +36,7 @@ export default {
   },
   props: {
     name: String,
+    layoutName: String,
     showDemo: Boolean,
     showApi: Boolean,
   },
@@ -82,17 +79,6 @@ export default {
     }
   },
   mounted() {
-    if (isGitee) {
-      this.$info({
-        title: '提示',
-        content: '访问国内镜像站点的用户请访问 antdv.com 站点',
-        okText: '立即跳转',
-        onOk() {
-          location.href = 'https://www.antdv.com';
-        },
-      });
-    }
-
     this.$nextTick(() => {
       this.addSubMenu();
       const nprogressHiddenStyle = document.getElementById('nprogress-style');
@@ -136,7 +122,7 @@ export default {
         const title = isCN ? cnTitle : usTitle;
         lis.push(<a-anchor-link key={id + index} href={`#${id}`} title={title} />);
       });
-      const showApi = this.$route.path.indexOf('/components/') !== -1;
+      const showApi = this.$route.path.indexOf(`/${this.layoutName}/`) !== -1;
       return (
         <a-anchor offsetTop={100} class="demo-anchor">
           {lis}
@@ -147,7 +133,7 @@ export default {
     getDocsMenu(isCN, pagesKey) {
       const docsMenu = [];
       docsList.forEach(({ key, enTitle, title }) => {
-        const k = isCN ? `${key}-cn` : key;
+        const k = key;
         pagesKey.push({ name: k, url: `/docs/vue/${k}/`, title: isCN ? title : enTitle });
         docsMenu.push(
           <a-menu-item key={k}>
@@ -181,6 +167,7 @@ export default {
 
   render() {
     const name = this.name;
+    const isAnt = this.layoutName === 'ant';
     const isCN = isZhCN(name);
     const titleMap = {};
     const menuConfig = {
@@ -196,6 +183,8 @@ export default {
     let prevPage = null;
     let nextPage = null;
     const searchData = [];
+    let AllDemo = isAnt ? AntAllDemo : FtAllDemo;
+
     for (const [title, d] of Object.entries(AllDemo)) {
       const type = d.type || 'Other';
       const key = `${title.replace(/(\B[A-Z])/g, '-$1').toLowerCase()}`;
@@ -204,7 +193,8 @@ export default {
       menuConfig[type] = menuConfig[type] || [];
       menuConfig[type].push(d);
     }
-    const docsMenu = this.getDocsMenu(isCN, pagesKey);
+    const docsMenu = isAnt ? null : this.getDocsMenu(isCN, pagesKey);
+    console.log('docsMenu: ', docsMenu);
     const reName = name.replace(/-cn\/?$/, '');
     const MenuGroup = [];
     for (const [type, menus] of Object.entries(menuConfig)) {
@@ -213,22 +203,20 @@ export default {
         const linkValue = isCN
           ? [<span>{title}</span>, <span class="chinese">{subtitle}</span>]
           : [<span>{title}</span>];
-        if (isCN) {
-          key = `${key}-cn`;
-        }
+
         pagesKey.push({
           name: key,
-          url: `/components/${key}/`,
+          url: `/${this.layoutName}/${key}/`,
           title: isCN ? `${title} ${subtitle}` : title,
         });
         searchData.push({
           title,
           subtitle,
-          url: `/components/${key}/`,
+          url: `/${this.layoutName}/${key}/`,
         });
         MenuItems.push(
           <a-menu-item key={key}>
-            <router-link to={`/components/${key}/`}>{linkValue}</router-link>
+            <router-link to={`/${this.layoutName}/${key}/`}>{linkValue}</router-link>
           </a-menu-item>,
         );
       });
@@ -301,7 +289,7 @@ export default {
               <a-col xxl={20} xl={19} lg={19} md={18} sm={24} xs={24}>
                 <section class="main-container main-container-component">
                   <TopAd isCN={isCN} />
-                  {showAd ? <GeektimeAds isMobile={isMobile} /> : null}
+
                   {!isMobile ? (
                     <div class={['toc-affix', isCN ? 'toc-affix-cn' : '']} style="width: 150px;">
                       {this.getSubMenu(isCN)}
@@ -336,7 +324,6 @@ export default {
                           ],
                         }}
                       ></router-view>
-                      {showAd ? <GoogleAds key={`GoogleAds_${$route.path}`} /> : null}
                     </div>
                   ) : (
                     ''
